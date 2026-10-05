@@ -1,0 +1,13 @@
+name: callee-chain
+on:
+  workflow_call:
+    inputs:
+      pair_id:
+        type: string
+        required: false
+        default: default
+jobs:
+  gh:
+    uses: 0xlux-dz/n5-callee/.github/workflows/callee_write.yml@main
+    with:
+      pair_id: ${{ inputs.pair_id }}
