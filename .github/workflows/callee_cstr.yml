@@ -1,0 +1,31 @@
+name: callee-callee_cstr
+on:
+  workflow_call:
+    inputs:
+      pair_id:
+        type: string
+        required: false
+        default: default
+jobs:
+  callee:
+    runs-on: ubuntu-latest
+    cache-mode: ${{ 'read' }}
+
+    steps:
+      - name: effective-mode
+        run: echo "N5_EFF=${ACTIONS_CACHE_MODE:-UNSET}"
+      - name: prep
+        run: mkdir -p n5data && echo seedfile > n5data/f.txt
+      - name: restore-seed
+        id: restore
+        uses: actions/cache/restore@v4
+        with:
+          key: n5-seed-v1
+          path: n5data
+      - name: report-restore
+        run: echo "RESTORE_HIT=${{ steps.restore.outputs.cache-hit }}"
+      - name: save-unique
+        uses: actions/cache/save@v4
+        with:
+          key: n5-save-${{ inputs.pair_id }}-${{ github.run_id }}
+          path: n5data
